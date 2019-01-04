@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     //reference
-    public GameManager GM;
+    public static GameManager GM = null;
     //number of rows & cloumns
     static int rowcol = 4;
     //button position
@@ -20,8 +20,9 @@ public class GameManager : MonoBehaviour
     // Before the start
     void Awake()
     {
-        //ref assignment
-        GM = this;
+        if (GM == null)
+            //ref assignment
+            GM = this;
         //variables def
         for (int i = 0; i < rowcol; i++)
         {
@@ -36,5 +37,49 @@ public class GameManager : MonoBehaviour
                 buttons[i, j].SetActive(false);
             }
         }
+    }
+
+    //activate a random button
+    public void SpawnRandom()
+    {
+        if (!CheckAvailableButton())
+        {
+            int x, y;
+            do
+            {
+                x = Random.Range(0, rowcol);
+                y = Random.Range(0, rowcol);
+            } while (buttons[x, y].activeInHierarchy);
+            buttons[x, y].SetActive(true);
+        }
+        else
+        {
+            GameOver();
+        }        
+
+    }
+
+    //check if all buttons are spawned
+    //could be improved
+    private bool CheckAvailableButton()
+    {
+        int active = 0;
+        for (int i = 0; i < rowcol; i++)
+        {
+            for (int j = 0; j < rowcol; j++)
+            {
+                if (buttons[i, j].activeInHierarchy)
+                    active++;
+            }
+        }
+        if (active == (Mathf.Pow(rowcol, 2)))
+            return true;
+        return false;
+    }
+
+    private void GameOver()
+    {
+        //TODO
+        Debug.Log("Game over!");
     }
 }
