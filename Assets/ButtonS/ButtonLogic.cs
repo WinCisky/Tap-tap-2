@@ -18,19 +18,29 @@ public class ButtonLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //check if there has been a touch
-        if ((Input.touchCount > 0) && (Input.GetTouch(0).phase == TouchPhase.Began))
+        //if there's at least one touch
+        if(Input.touchCount > 0)
         {
-            //transform the touch to world coordinates
-            touch_pos_world = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
-
-            //We now raycast with this information. If we have hit something we can process it.
-            RaycastHit2D hitInformation = Physics2D.Raycast(touch_pos_world, Camera.main.transform.forward, Mathf.Infinity,layer_mask);
-
-            if (hitInformation.collider != null)
+            //multitouch handling
+            foreach (var item in Input.touches)
             {
-                //deactivate the g.o.
-                hitInformation.transform.gameObject.SetActive(false);
+                //action on touch beginning
+                if (item.phase == TouchPhase.Began)
+                {
+                    //transform the touch to world coordinates
+                    touch_pos_world = Camera.main.ScreenToWorldPoint(item.position);
+
+                    //We now raycast with this information. If we have hit something we can process it.
+                    RaycastHit2D hitInformation = Physics2D.Raycast(touch_pos_world, Camera.main.transform.forward, Mathf.Infinity, layer_mask);
+
+                    if (hitInformation.collider != null)
+                    {
+                        //deactivate the g.o.
+                        hitInformation.transform.gameObject.SetActive(false);
+                        //add a point
+                        ScoreManager.SM.AddPoint();
+                    }
+                }
             }
         }
     }

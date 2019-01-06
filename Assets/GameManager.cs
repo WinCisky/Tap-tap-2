@@ -77,9 +77,25 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
-    private void GameOver()
+    //return the number of active buttons on screen
+    public int ActiveButtons()
+    {
+        int active = 0;
+        for (int i = 0; i < rowcol; i++)
+        {
+            for (int j = 0; j < rowcol; j++)
+            {
+                if (buttons[i, j].activeInHierarchy)
+                    active++;
+            }
+        }
+        return active;
+    }
+
+    public void GameOver()
     {
         //TODO
         Debug.Log("Game over!");
+        MenuManager.MM.LoadScene(2);
     }
 }
